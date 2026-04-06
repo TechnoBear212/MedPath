@@ -1,4 +1,6 @@
-
+<head>
+  <link rel="manifest" href="manifest.json">
+</head>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 #mp{max-width:480px;margin:0 auto;font-family:var(--font-sans);}
@@ -630,4 +632,9 @@ document.addEventListener('keydown',e=>{
 // ─── INIT ───
 renderQuizCats();
 renderHome();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
 </script>
