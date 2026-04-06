@@ -1,0 +1,633 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+#mp{max-width:480px;margin:0 auto;font-family:var(--font-sans);}
+.sc{display:none;}.sc.on{display:block;}
+.hdr{padding:1rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:10px;}
+.stat-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:1rem;}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:11px;}
+.sv{font-size:21px;font-weight:500;color:var(--color-text-primary);}
+.sl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.9rem 1.1rem;margin:0 1rem .9rem;}
+.sec{font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;}
+.badge{display:inline-block;font-size:11px;padding:3px 9px;border-radius:99px;background:var(--color-background-info);color:var(--color-text-info);margin:2px;}
+.bw{background:var(--color-background-warning);color:var(--color-text-warning);}
+.bs{background:var(--color-background-success);color:var(--color-text-success);}
+.bd{background:var(--color-background-danger);color:var(--color-text-danger);}
+.pbtn{display:block;width:calc(100% - 2rem);margin:0 1rem .9rem;padding:13px;background:var(--color-background-info);color:var(--color-text-info);border:none;border-radius:var(--border-radius-lg);font-size:15px;font-weight:500;cursor:pointer;font-family:var(--font-sans);text-align:center;}
+.pbtn:hover{opacity:.85;}
+.sbtn{display:block;width:calc(100% - 2rem);margin:0 1rem .9rem;padding:11px;background:none;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);color:var(--color-text-secondary);font-size:14px;cursor:pointer;font-family:var(--font-sans);}
+.sbtn:hover{background:var(--color-background-secondary);}
+.ai-m,.usr-m{padding:10px 13px;border-radius:var(--border-radius-lg);font-size:13.5px;line-height:1.65;max-width:90%;}
+.ai-m{background:var(--color-background-secondary);color:var(--color-text-primary);}
+.usr-m{background:var(--color-background-info);color:var(--color-text-info);margin-left:auto;}
+.vrow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;}
+.vrow:last-child{border-bottom:none;}
+.hist-i{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;}
+.hist-i:last-child{border-bottom:none;}
+.thinking{display:flex;gap:4px;padding:10px 13px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);width:fit-content;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--color-text-secondary);animation:bounce 1.2s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
+.g{color:var(--color-text-success);}.w{color:var(--color-text-warning);}.r{color:var(--color-text-danger);}
+textarea.inp{flex:1;resize:none;height:68px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:9px 11px;font-size:13.5px;font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary);line-height:1.5;}
+textarea.inp:focus{outline:none;border-color:var(--color-border-primary);}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 1rem 1rem;}
+.mode-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;cursor:pointer;background:var(--color-background-primary);}
+.mode-card:hover{background:var(--color-background-secondary);}
+.mode-icon{font-size:22px;margin-bottom:6px;}
+.mode-title{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.mode-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px;line-height:1.4;}
+.mode-full{grid-column:1/-1;}
+.opt-btn{display:block;width:100%;text-align:left;padding:11px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13.5px;font-family:var(--font-sans);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);margin-bottom:8px;line-height:1.5;}
+.opt-btn:hover:not(:disabled){background:var(--color-background-secondary);}
+.opt-correct{background:var(--color-background-success)!important;border-color:var(--color-border-success)!important;color:var(--color-text-success)!important;}
+.opt-wrong{background:var(--color-background-danger)!important;border-color:var(--color-border-danger)!important;color:var(--color-text-danger)!important;}
+.toggle-row{display:flex;gap:0;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);overflow:hidden;margin:0 1rem 1rem;}
+.tog{flex:1;padding:9px;border:none;background:none;font-size:13px;font-family:var(--font-sans);cursor:pointer;color:var(--color-text-secondary);}
+.tog.active{background:var(--color-background-info);color:var(--color-text-info);}
+.progress-bar-bg{background:var(--color-background-secondary);border-radius:99px;height:6px;flex:1;}
+.progress-bar-fill{background:var(--color-background-info);border-radius:99px;height:6px;transition:width .3s;}
+.srs-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;}
+.srs-row:last-child{border-bottom:none;}
+.cat-btn{display:inline-block;padding:8px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:none;font-family:var(--font-sans);color:var(--color-text-primary);margin:3px;}
+.cat-btn.sel{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info);}
+</style>
+
+<div id="mp">
+
+<!-- ═══ HOME ═══ -->
+<div id="s-home" class="sc on">
+  <div class="hdr">
+    <div>
+      <div style="font-size:19px;font-weight:500;color:var(--color-text-primary);">MedPath</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);">Year 1 clinical reasoning suite</div>
+    </div>
+    <div id="st-badge" style="margin-left:auto;font-size:12px;padding:4px 10px;background:var(--color-background-warning);color:var(--color-text-warning);border-radius:99px;">🔥 1 day streak</div>
+  </div>
+  <div class="stat-g">
+    <div class="stat"><div class="sv" id="st-cases">0</div><div class="sl">Cases done</div></div>
+    <div class="stat"><div class="sv" id="st-quizzes">0</div><div class="sl">Quizzes done</div></div>
+    <div class="stat"><div class="sv" id="st-avg">—</div><div class="sl">Avg score</div></div>
+  </div>
+
+  <!-- SRS due alert -->
+  <div id="srs-alert" style="display:none;margin:0 1rem .9rem;padding:10px 13px;background:var(--color-background-warning);border-radius:var(--border-radius-md);font-size:13px;color:var(--color-text-warning);cursor:pointer;" onclick="showScreen('srs')"></div>
+
+  <!-- Mode cards -->
+  <div class="mode-grid">
+    <div class="mode-card" onclick="showCaseSetup()">
+      <div class="mode-icon">🏥</div>
+      <div class="mode-title">Clinical cases</div>
+      <div class="mode-sub">AI Socratic reasoning with real patient vignettes</div>
+    </div>
+    <div class="mode-card" onclick="showScreen('quiz')">
+      <div class="mode-icon">📚</div>
+      <div class="mode-title">Quiz bank</div>
+      <div class="mode-sub">Anatomy, pharmacology, physiology MCQs</div>
+    </div>
+    <div class="mode-card mode-full" onclick="showScreen('srs')">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <div class="mode-icon" style="margin:0;">🧠</div>
+            <div class="mode-title">Spaced repetition review</div>
+            <div id="srs-due-badge" style="display:none;" class="badge bd"></div>
+          </div>
+          <div class="mode-sub">SM-2 algorithm resurfaces weak topics at optimal intervals</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weak areas -->
+  <div style="padding:0 1rem .9rem;">
+    <div class="sec">Weak areas</div>
+    <div id="weak-el"><span style="font-size:13px;color:var(--color-text-secondary);">Complete sessions to track weak areas</span></div>
+  </div>
+
+  <!-- Topic progress -->
+  <div id="prog-card" class="card" style="display:none;">
+    <div class="sec" style="margin-bottom:10px;">Topic progress</div>
+    <div id="prog-bars"></div>
+  </div>
+
+  <!-- History -->
+  <div id="hist-card" class="card" style="display:none;">
+    <div class="sec" style="margin-bottom:8px;">Recent activity</div>
+    <div id="hist-list"></div>
+  </div>
+  <div style="height:2rem;"></div>
+</div>
+
+<!-- ═══ CASE SETUP ═══ -->
+<div id="s-csetup" class="sc">
+  <div class="hdr">
+    <button onclick="goHome()" style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:13px;padding:0;font-family:var(--font-sans);">← Home</button>
+    <div style="flex:1;font-size:15px;font-weight:500;color:var(--color-text-primary);text-align:center;">Start a case</div>
+  </div>
+  <div style="padding:1rem;">
+    <div class="sec">Case source</div>
+    <div class="toggle-row" style="margin:0 0 1rem;">
+      <button class="tog active" id="tog-ai" onclick="setCaseSrc('ai')">AI generated</button>
+      <button class="tog" id="tog-off" onclick="setCaseSrc('offline')">Offline bank (8 cases)</button>
+    </div>
+    <div class="sec">Filter by system (optional)</div>
+    <div id="cs-sys" style="margin-bottom:1rem;"></div>
+  </div>
+  <button class="pbtn" onclick="startCase()">Begin case →</button>
+</div>
+
+<!-- ═══ CASE ═══ -->
+<div id="s-case" class="sc">
+  <div class="hdr">
+    <button onclick="goHome()" style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:13px;padding:0;font-family:var(--font-sans);">← Home</button>
+    <div style="flex:1;font-size:15px;font-weight:500;color:var(--color-text-primary);text-align:center;">Patient case</div>
+    <div id="c-topic" class="badge"></div>
+  </div>
+  <div id="c-load" style="padding:4rem 1rem;text-align:center;">
+    <div class="thinking" style="margin:0 auto 1rem;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div style="font-size:13px;color:var(--color-text-secondary);">Preparing patient case...</div>
+  </div>
+  <div id="c-body" style="display:none;">
+    <div style="padding:1rem;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);">
+      <div id="c-banner" style="font-size:15px;font-weight:500;color:var(--color-text-primary);"></div>
+      <div id="c-cc" style="font-size:12px;color:var(--color-text-secondary);margin-top:3px;"></div>
+    </div>
+    <div class="card"><div class="sec">Vitals</div><div id="c-vitals"></div></div>
+    <div class="card"><div class="sec">History of present illness</div><div id="c-hpi" style="font-size:13px;line-height:1.7;color:var(--color-text-primary);"></div></div>
+    <div class="card"><div class="sec">Physical examination</div><div id="c-exam" style="font-size:13px;line-height:1.7;color:var(--color-text-primary);"></div></div>
+    <div class="card"><div class="sec">Investigations</div><div id="c-labs" style="font-size:13px;line-height:1.7;color:var(--color-text-primary);"></div></div>
+    <div style="padding:0 1rem .5rem;"><div class="sec">AI Tutor — Socratic Reasoning</div></div>
+    <div id="chat-msgs" style="padding:0 1rem;display:flex;flex-direction:column;gap:9px;min-height:80px;"></div>
+    <div style="display:flex;gap:8px;padding:1rem;border-top:0.5px solid var(--color-border-tertiary);margin-top:.5rem;">
+      <textarea id="chat-in" class="inp" placeholder="Your differential or answer to the tutor..."></textarea>
+      <button id="send-b" onclick="sendMsg()" style="padding:8px 14px;background:var(--color-background-info);color:var(--color-text-info);border:none;border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;font-family:var(--font-sans);align-self:flex-end;">Send</button>
+    </div>
+    <button class="sbtn" onclick="endCase()">End session & get feedback</button>
+    <div style="height:1rem;"></div>
+  </div>
+</div>
+
+<!-- ═══ CASE FEEDBACK ═══ -->
+<div id="s-fb" class="sc">
+  <div class="hdr"><div style="font-size:15px;font-weight:500;color:var(--color-text-primary);">Session feedback</div></div>
+  <div id="fb-load" style="padding:4rem 1rem;text-align:center;">
+    <div class="thinking" style="margin:0 auto 1rem;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div style="font-size:13px;color:var(--color-text-secondary);">Analysing your reasoning...</div>
+  </div>
+  <div id="fb-body" style="display:none;">
+    <div style="padding:2rem 1rem 1rem;text-align:center;">
+      <div id="fb-score" style="font-size:52px;font-weight:500;"></div>
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-top:2px;">out of 100</div>
+    </div>
+    <div class="card"><div class="sec" style="margin-bottom:6px;">What you did well</div><div id="fb-str" style="font-size:13px;line-height:1.7;color:var(--color-text-primary);"></div></div>
+    <div class="card"><div class="sec" style="margin-bottom:6px;">Areas to improve</div><div id="fb-imp" style="font-size:13px;line-height:1.7;color:var(--color-text-primary);"></div></div>
+    <div class="card"><div class="sec" style="margin-bottom:6px;">Key learning points</div><div id="fb-lrn" style="font-size:13px;line-height:1.7;color:var(--color-text-primary);"></div></div>
+    <div class="card" style="border-color:var(--color-border-info);"><div class="sec" style="margin-bottom:5px;">Diagnosis (revealed)</div><div id="fb-dx" style="font-size:15px;font-weight:500;color:var(--color-text-primary);"></div></div>
+    <div id="srs-update-note" style="margin:0 1rem .9rem;padding:10px 13px;background:var(--color-background-success);border-radius:var(--border-radius-md);font-size:13px;color:var(--color-text-success);display:none;"></div>
+    <button class="pbtn" onclick="showCaseSetup()">Start another case →</button>
+    <button class="sbtn" onclick="goHome()">Back to home</button>
+    <div style="height:2rem;"></div>
+  </div>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="s-quiz" class="sc">
+  <div class="hdr">
+    <button onclick="goHome()" style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:13px;padding:0;font-family:var(--font-sans);">← Home</button>
+    <div style="flex:1;font-size:15px;font-weight:500;color:var(--color-text-primary);text-align:center;">Quiz bank</div>
+  </div>
+
+  <!-- Setup -->
+  <div id="q-setup">
+    <div style="padding:1rem;">
+      <div class="sec">Choose category</div>
+      <div id="q-cats" style="margin-bottom:1.2rem;"></div>
+      <div class="sec">Number of questions</div>
+      <div class="toggle-row" style="margin:0 0 1.2rem;">
+        <button class="tog active" id="qn-5" onclick="setQCount(5)">5 questions</button>
+        <button class="tog" id="qn-10" onclick="setQCount(10)">10 questions</button>
+      </div>
+    </div>
+    <button class="pbtn" onclick="loadQuiz()">Generate quiz →</button>
+  </div>
+
+  <!-- Loading -->
+  <div id="q-load" style="display:none;padding:4rem 1rem;text-align:center;">
+    <div class="thinking" style="margin:0 auto 1rem;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div style="font-size:13px;color:var(--color-text-secondary);">Generating your quiz...</div>
+  </div>
+
+  <!-- Question -->
+  <div id="q-body" style="display:none;padding:1rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;">
+      <div id="q-counter" style="font-size:12px;color:var(--color-text-secondary);"></div>
+      <div id="q-cat-badge" class="badge"></div>
+    </div>
+    <div id="q-text" style="font-size:14px;font-weight:500;color:var(--color-text-primary);line-height:1.6;margin-bottom:1rem;"></div>
+    <div id="q-opts"></div>
+    <div id="q-expl" style="display:none;padding:11px 13px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);font-size:13px;line-height:1.6;color:var(--color-text-primary);margin-top:.5rem;"></div>
+    <div id="q-next-row" style="display:none;margin-top:1rem;">
+      <button class="pbtn" style="margin:0;" onclick="nextQ()">Next question →</button>
+    </div>
+  </div>
+
+  <!-- Quiz results -->
+  <div id="q-results" style="display:none;">
+    <div style="padding:2rem 1rem 1rem;text-align:center;">
+      <div id="qr-score" style="font-size:52px;font-weight:500;"></div>
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-top:2px;" id="qr-label"></div>
+    </div>
+    <div id="qr-breakdown" style="padding:0 1rem 1rem;"></div>
+    <div id="qr-srs-note" style="margin:0 1rem .9rem;padding:10px 13px;background:var(--color-background-success);border-radius:var(--border-radius-md);font-size:13px;color:var(--color-text-success);display:none;"></div>
+    <button class="pbtn" onclick="resetQuiz()">Try another quiz →</button>
+    <button class="sbtn" onclick="goHome()">Back to home</button>
+    <div style="height:2rem;"></div>
+  </div>
+</div>
+
+<!-- ═══ SRS ═══ -->
+<div id="s-srs" class="sc">
+  <div class="hdr">
+    <button onclick="goHome()" style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:13px;padding:0;font-family:var(--font-sans);">← Home</button>
+    <div style="flex:1;font-size:15px;font-weight:500;color:var(--color-text-primary);text-align:center;">Spaced repetition</div>
+  </div>
+  <div style="padding:1rem .9rem .5rem;font-size:13px;color:var(--color-text-secondary);line-height:1.6;">Topics resurface based on your performance using the SM-2 algorithm. High scores push intervals out; low scores bring topics back sooner.</div>
+  <div id="srs-body" style="padding:.5rem 1rem 2rem;"></div>
+</div>
+
+</div>
+
+<script>
+const SYSTEMS=['Cardiology','Respiratory','Renal','Gastrointestinal','Neurology','Endocrine','Haematology','Musculoskeletal'];
+const QUIZ_CATS=['Anatomy','Pharmacology','Physiology','Biochemistry','Pathology','Clinical reasoning'];
+
+const OFFLINE_CASES=[
+  {chiefComplaint:"Crushing chest pain radiating to left arm",age:58,gender:"Male",vitals:{BP:"155/95 mmHg",HR:"102 bpm",RR:"20/min",Temp:"37.1°C",SpO2:"95%"},history:"58-year-old male smoker with 3 hours of crushing substernal chest pain radiating to left arm and jaw. Associated diaphoresis and nausea. PMH: hypertension, hypercholesterolaemia. No previous cardiac events.",physicalExam:"Diaphoretic, distressed. S4 gallop. Mild bibasal crackles. BP equal both arms. No murmurs.",investigations:"Troponin I: 2.8 ng/mL (elevated). ECG: ST elevation V1–V4, reciprocal inferior changes. CXR: mild pulmonary vascular congestion.",topic:"Cardiology",diagnosis:"Anterior STEMI (ST-elevation myocardial infarction)"},
+  {chiefComplaint:"Sudden breathlessness and right-sided chest pain",age:34,gender:"Female",vitals:{BP:"118/76 mmHg",HR:"118 bpm",RR:"24/min",Temp:"37.4°C",SpO2:"91%"},history:"34-year-old female, 6 weeks post-partum C-section. Sudden onset dyspnoea and right-sided pleuritic chest pain for 2 hours. Currently on combined oral contraceptive pill. No fever.",physicalExam:"Tachycardic, tachypnoeic. Right calf swollen and tender (DVT). Reduced breath sounds right base. No wheeze.",investigations:"D-dimer: markedly elevated. ABG: PaO2 58 mmHg, PaCO2 30 mmHg. ECG: S1Q3T3 pattern. CTPA: filling defect right main pulmonary artery.",topic:"Respiratory",diagnosis:"Massive pulmonary embolism (DVT, post-partum, OCP — triple risk)"},
+  {chiefComplaint:"Confusion and decreased urine output",age:72,gender:"Male",vitals:{BP:"88/60 mmHg",HR:"112 bpm",RR:"18/min",Temp:"38.8°C",SpO2:"97%"},history:"72-year-old male with BPH. 2 days of confusion, oliguria, malaise. Wife reports vomiting/diarrhoea last week and poor fluid intake. Normally on amlodipine and tamsulosin.",physicalExam:"Confused. Dry mucous membranes, reduced skin turgor. Suprapubic dullness. No peripheral oedema.",investigations:"Creatinine: 412 μmol/L (baseline 90). Urea: 28. K: 6.1. Urine Na <20 mmol/L. Bladder scan: 600 mL retained. Urine output: 15 mL/hr.",topic:"Renal",diagnosis:"Acute kidney injury — combined pre-renal (dehydration) and post-renal (urinary retention from BPH)"},
+  {chiefComplaint:"Worsening right iliac fossa pain",age:19,gender:"Female",vitals:{BP:"122/78 mmHg",HR:"95 bpm",RR:"16/min",Temp:"38.3°C",SpO2:"99%"},history:"19-year-old female. 18-hour history of periumbilical pain migrating to RIF, nausea, vomiting, anorexia. LMP 3 weeks ago, no vaginal discharge. No urinary symptoms.",physicalExam:"Tenderness and guarding at McBurney's point. Rovsing's sign positive. Psoas sign positive. No cervical motion tenderness.",investigations:"WBC: 14.2 (neutrophilia). CRP: 78. Urine hCG: negative. USS: non-compressible blind-ending structure in RIF, 9 mm diameter.",topic:"Gastrointestinal",diagnosis:"Acute appendicitis"},
+  {chiefComplaint:"Severe headache, fever and neck stiffness",age:21,gender:"Male",vitals:{BP:"108/70 mmHg",HR:"126 bpm",RR:"22/min",Temp:"39.8°C",SpO2:"97%"},history:"21-year-old male university student. 12-hour history of thunderclap headache, photophobia, neck stiffness, and non-blanching petechial rash on lower limbs. Lives in student halls.",physicalExam:"Ill, photophobic. Kernig's positive. Brudzinski's positive. Petechial/purpuric non-blanching rash on bilateral lower limbs.",investigations:"WBC: 18.4. CRP: 210. LP: turbid CSF, opening pressure 28 cmH2O, WBC 2800 (90% neutrophils), low glucose, high protein.",topic:"Neurology",diagnosis:"Bacterial meningitis with meningococcal septicaemia (Neisseria meningitidis)"},
+  {chiefComplaint:"Polyuria, polydipsia and vomiting",age:16,gender:"Female",vitals:{BP:"100/65 mmHg",HR:"120 bpm",RR:"28/min",Temp:"37.0°C",SpO2:"98%"},history:"16-year-old T1DM ran out of insulin 3 days ago. 2-day history of polyuria, polydipsia, abdominal pain, vomiting. Parents note deep breathing (Kussmaul). Fruity breath odour.",physicalExam:"Kussmaul breathing. Fruity breath. Dry mucous membranes. Diffuse mild abdominal tenderness. Mildly confused.",investigations:"Glucose: 28.4 mmol/L. ABG: pH 7.18, HCO3 8, pCO2 20. Blood ketones: 6.2 mmol/L. K: 5.8 (total body depleted). Urine: heavy glycosuria + ketonuria.",topic:"Endocrine",diagnosis:"Diabetic ketoacidosis (DKA) in T1DM — insulin omission"},
+  {chiefComplaint:"Fatigue, pallor and exertional breathlessness",age:28,gender:"Female",vitals:{BP:"110/72 mmHg",HR:"96 bpm",RR:"16/min",Temp:"36.8°C",SpO2:"99%"},history:"28-year-old vegetarian female. 3-month history of progressive fatigue, pallor, dyspnoea on exertion. Menorrhagia (periods 8–9 days). Diet: vegetables only, no red meat or fortified foods.",physicalExam:"Pale conjunctivae and palmar creases. Koilonychia. Angular stomatitis. Smooth glossitis. No lymphadenopathy or organomegaly.",investigations:"Hb: 7.8 g/dL. MCV: 64 fL (microcytic). Ferritin: 4 μg/L. Serum iron: low. TIBC: elevated. Film: microcytic hypochromic cells, pencil cells.",topic:"Haematology",diagnosis:"Iron deficiency anaemia — menorrhagia + dietary deficiency"},
+  {chiefComplaint:"Hot swollen knee, refusing to weight-bear",age:8,gender:"Male",vitals:{BP:"100/65 mmHg",HR:"118 bpm",RR:"20/min",Temp:"39.1°C",SpO2:"98%"},history:"8-year-old male. 2-day history of right knee pain, swelling, refusing to weight-bear. Sore throat 2 weeks ago. No trauma, no rash. Leg held in flexion.",physicalExam:"Unwell child. Right knee: erythematous, warm, swollen, exquisitely tender. Markedly reduced ROM. Passive movement causes severe pain.",investigations:"WBC: 17.8. CRP: 145. ESR: 88. Joint aspiration: turbid, WBC 95,000 (>90% neutrophils), low glucose. X-ray: joint space widening.",topic:"Musculoskeletal",diagnosis:"Septic arthritis right knee — orthopaedic emergency (likely Staphylococcus aureus)"}
+];
+
+// ─── STATE ───
+let S={
+  cases:0,quizzes:0,allScores:[],
+  weak:{},history:[],
+  srs:{},
+  streak:1,
+  caseSrc:'ai',sys:null,
+  cas:null,msgs:[],busy:false,
+  quiz:{cat:null,count:5,questions:[],current:0,answers:[],answered:false}
+};
+
+// ─── UTILS ───
+function $(id){return document.getElementById(id);}
+function showScreen(id){document.querySelectorAll('.sc').forEach(e=>e.classList.remove('on'));$('s-'+id).classList.add('on');window.scrollTo(0,0);}
+function goHome(){renderHome();showScreen('home');}
+function fmt(t){return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
+function mkThink(){const d=document.createElement('div');d.className='thinking';d.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';return d;}
+function scoreClass(s){return s>=70?'g':s>=50?'w':'r';}
+
+// ─── SRS ALGORITHM (SM-2 simplified) ───
+function updateSRS(topic,score){
+  const n=score/100;
+  const d=S.srs[topic]||{interval:1,ease:2.5,reps:0,due:Date.now(),lastScore:score};
+  if(n>=0.8){d.reps++;d.interval=d.reps===1?1:d.reps===2?6:Math.round(d.interval*d.ease);d.ease=Math.max(1.3,d.ease+0.05);}
+  else if(n>=0.6){d.ease=Math.max(1.3,d.ease-0.15);}
+  else{d.reps=0;d.interval=1;d.ease=Math.max(1.3,d.ease-0.2);}
+  d.due=Date.now()+d.interval*864e5;
+  d.lastScore=score;
+  S.srs[topic]=d;
+}
+
+function srsStatus(topic){
+  const d=S.srs[topic];
+  if(!d)return{due:false,overdue:0};
+  const over=Math.floor((Date.now()-d.due)/864e5);
+  return{due:d.due<=Date.now(),overdue:over,interval:d.interval,ease:d.ease,lastScore:d.lastScore};
+}
+
+function countDue(){return Object.keys(S.srs).filter(t=>S.srs[t].due<=Date.now()).length;}
+
+// ─── HOME ───
+function renderHome(){
+  $('st-cases').textContent=S.cases;
+  $('st-quizzes').textContent=S.quizzes;
+  const all=S.allScores;
+  $('st-avg').textContent=all.length?Math.round(all.reduce((a,b)=>a+b,0)/all.length)+'%':'—';
+  $('st-badge').textContent='🔥 '+S.streak+' day streak';
+
+  // SRS alert
+  const due=countDue();
+  const sa=$('srs-alert'),sb=$('srs-due-badge');
+  if(due>0){sa.style.display='block';sa.textContent=`📅 ${due} topic${due>1?'s':''} due for review — tap to start`;sb.style.display='inline-block';sb.textContent=due+' due';}
+  else{sa.style.display='none';sb.style.display='none';}
+
+  // Weak areas
+  const we=$('weak-el');
+  const sorted=Object.entries(S.weak).sort((a,b)=>a[1]-b[1]);
+  we.innerHTML=sorted.length===0
+    ?'<span style="font-size:13px;color:var(--color-text-secondary);">Complete sessions to track weak areas</span>'
+    :sorted.slice(0,6).map(([k,v])=>`<span class="badge bw" style="cursor:pointer;" onclick="setQTopic('${k}')">${k} ${v}%</span>`).join('');
+
+  // Progress bars
+  const pc=$('prog-card'),pb=$('prog-bars');
+  if(sorted.length>0){
+    pc.style.display='block';
+    pb.innerHTML=sorted.map(([k,v])=>`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div style="font-size:12px;color:var(--color-text-secondary);width:90px;flex-shrink:0;">${k}</div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${v}%;background:${v>=70?'var(--color-background-success)':v>=50?'var(--color-background-warning)':'var(--color-background-danger)'}"></div></div>
+        <div style="font-size:12px;font-weight:500;width:34px;text-align:right;" class="${scoreClass(v)}">${v}%</div>
+      </div>`).join('');
+  }else pc.style.display='none';
+
+  // History
+  const hc=$('hist-card'),hl=$('hist-list');
+  if(!S.history.length){hc.style.display='none';return;}
+  hc.style.display='block';
+  hl.innerHTML=[...S.history].reverse().slice(0,8).map(h=>`
+    <div class="hist-i">
+      <div>
+        <div style="font-size:13px;color:var(--color-text-primary);">${h.topic} <span class="badge" style="font-size:10px;">${h.type}</span></div>
+        <div style="font-size:11px;color:var(--color-text-secondary);">${h.label}</div>
+      </div>
+      <div style="font-size:13px;font-weight:500;" class="${scoreClass(h.score)}">${h.score}%</div>
+    </div>`).join('');
+}
+
+// ─── CASE SETUP ───
+function showCaseSetup(){
+  renderCaseSetupSys();
+  showScreen('csetup');
+}
+function renderCaseSetupSys(){
+  $('cs-sys').innerHTML=SYSTEMS.map(s=>`
+    <span class="cat-btn${S.sys===s?' sel':''}" onclick="toggleSys('${s}')">${s}</span>`).join('');
+}
+function toggleSys(s){S.sys=S.sys===s?null:s;renderCaseSetupSys();}
+function setCaseSrc(v){
+  S.caseSrc=v;
+  $('tog-ai').className='tog'+(v==='ai'?' active':'');
+  $('tog-off').className='tog'+(v==='offline'?' active':'');
+}
+function setQTopic(t){showScreen('quiz');setTimeout(()=>{S.quiz.cat=t;renderQuizCats();},50);}
+
+// ─── CASE ───
+async function startCase(){
+  S.cas=null;S.msgs=[];S.busy=false;
+  $('c-load').style.display='block';
+  $('c-body').style.display='none';
+  $('chat-msgs').innerHTML='';
+  showScreen('case');
+
+  if(S.caseSrc==='offline'){
+    let pool=S.sys?OFFLINE_CASES.filter(c=>c.topic===S.sys):OFFLINE_CASES;
+    if(!pool.length)pool=OFFLINE_CASES;
+    S.cas=pool[Math.floor(Math.random()*pool.length)];
+    renderCase();
+    addAI("Study this case carefully. What is your **primary differential diagnosis**? Give me your top 3 possibilities with a brief rationale for each. Think about the key discriminating features.");
+    return;
+  }
+
+  const hint=S.sys?`Focus on the ${S.sys} system.`:'Pick any Year 1 system: cardiology, respiratory, renal, GI, neurology, endocrine, haematology, or musculoskeletal.';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,
+        system:`You are MedPath clinical case generator for Year 1 medical students. ${hint}
+Return ONLY valid JSON (no fences). Schema exactly:
+{"chiefComplaint":"","age":45,"gender":"Male","vitals":{"BP":"","HR":"","RR":"","Temp":"","SpO2":""},"history":"2-3 sentence HPI","physicalExam":"Key exam findings","investigations":"Labs/ECG/imaging","topic":"System","diagnosis":"Actual diagnosis — hidden from student"}`,
+        messages:[{role:'user',content:'Generate a new Year 1 patient case.'}]})});
+    const d=await res.json();
+    S.cas=JSON.parse(d.content[0].text.trim().replace(/```json|```/g,'').trim());
+    renderCase();
+    addAI("Study this case carefully. What is your **primary differential diagnosis**? Give me your top 3 possibilities with a brief rationale for each.");
+  }catch(e){$('c-load').innerHTML='<div style="padding:2rem 1rem;text-align:center;color:var(--color-text-danger);font-size:13px;">Failed to load case. <button onclick="startCase()" style="background:none;border:none;cursor:pointer;color:var(--color-text-info);font-family:var(--font-sans);">Retry</button> or switch to offline bank.</div>';}
+}
+
+function renderCase(){
+  const c=S.cas;
+  $('c-topic').textContent=c.topic;
+  $('c-banner').textContent=`${c.age}-year-old ${c.gender}`;
+  $('c-cc').textContent='Chief complaint: '+c.chiefComplaint;
+  $('c-vitals').innerHTML=Object.entries(c.vitals).map(([k,v])=>`<div class="vrow"><span style="color:var(--color-text-secondary);">${k}</span><span style="font-weight:500;color:var(--color-text-primary);">${v}</span></div>`).join('');
+  $('c-hpi').textContent=c.history;
+  $('c-exam').textContent=c.physicalExam;
+  $('c-labs').textContent=c.investigations;
+  $('c-load').style.display='none';
+  $('c-body').style.display='block';
+}
+
+function addAI(txt){S.msgs.push({role:'assistant',content:txt});renderMsgs();}
+function renderMsgs(){
+  $('chat-msgs').innerHTML=S.msgs.map(m=>`<div class="${m.role==='assistant'?'ai-m':'usr-m'}">${fmt(m.content)}</div>`).join('');
+  $('chat-msgs').lastElementChild?.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+async function sendMsg(){
+  if(S.busy)return;
+  const el=$('chat-in'),txt=el.value.trim();if(!txt)return;
+  S.msgs.push({role:'user',content:txt});el.value='';renderMsgs();
+  const th=mkThink();$('chat-msgs').appendChild(th);
+  S.busy=true;$('send-b').disabled=true;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,
+        system:`You are MedPath, a Socratic clinical tutor for Year 1 medical students.
+Case (diagnosis hidden): ${JSON.stringify({...S.cas,diagnosis:'[HIDDEN]'})}
+Actual diagnosis (reveal only after 5+ exchanges or when student clearly correct): ${S.cas?.diagnosis}
+Rules: Socratic only — probe, challenge, guide. Never hand answer early. 2-4 sentences max. Be warm but rigorous. After 5+ exchanges or correct answer, confirm and discuss pathophysiology.`,
+        messages:S.msgs.map(m=>({role:m.role,content:m.content}))})});
+    const d=await res.json();th.remove();addAI(d.content[0].text);
+  }catch(e){th.remove();addAI('Connection error — please try again.');}
+  S.busy=false;$('send-b').disabled=false;
+}
+
+async function endCase(){
+  if(S.msgs.length<3){alert('Have at least 2 exchanges with the tutor before ending.');return;}
+  showScreen('fb');
+  $('fb-load').style.display='block';$('fb-body').style.display='none';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,
+        system:`You are MedPath evaluating a Year 1 student's clinical reasoning.
+Case: ${JSON.stringify(S.cas)}
+Conversation: ${JSON.stringify(S.msgs)}
+Return ONLY valid JSON (no fences):
+{"score":72,"strengths":"2-3 sentences","improve":"2-3 sentences","learning":"2-3 clinical pearls","diagnosis":"Actual diagnosis + one sentence explanation"}
+Score 0-100: differential quality, reasoning logic, Socratic engagement, clinical thinking.`,
+        messages:[{role:'user',content:'Evaluate this session.'}]})});
+    const d=await res.json();
+    const fb=JSON.parse(d.content[0].text.trim().replace(/```json|```/g,'').trim());
+    const score=Math.round(fb.score);
+    S.cases++;S.allScores.push(score);
+    const topic=S.cas.topic;
+    S.weak[topic]=S.weak[topic]===undefined?score:Math.round((S.weak[topic]+score)/2);
+    updateSRS(topic,score);
+    S.history.push({topic,label:S.cas.chiefComplaint,score,type:'Case',dx:S.cas.diagnosis});
+    const se=$('fb-score');se.textContent=score+'%';se.className=scoreClass(score);
+    $('fb-str').textContent=fb.strengths;$('fb-imp').textContent=fb.improve;$('fb-lrn').textContent=fb.learning;$('fb-dx').textContent=fb.diagnosis;
+    const sn=$('srs-update-note');
+    const st=srsStatus(topic);
+    sn.style.display='block';
+    sn.textContent=score>=70?`SRS updated: ${topic} next due in ${st.interval} day${st.interval>1?'s':''}`:`SRS: ${topic} flagged for earlier review (interval reset)`;
+    $('fb-load').style.display='none';$('fb-body').style.display='block';
+  }catch(e){$('fb-load').innerHTML='<div style="padding:2rem;text-align:center;color:var(--color-text-secondary);font-size:13px;">Error loading feedback. <button onclick="goHome()" style="background:none;border:none;cursor:pointer;color:var(--color-text-info);font-family:var(--font-sans);">Go home</button></div>';}
+}
+
+// ─── QUIZ ───
+function renderQuizCats(){
+  $('q-cats').innerHTML=QUIZ_CATS.map(c=>`<button class="cat-btn${S.quiz.cat===c?' sel':''}" onclick="pickCat('${c}')">${c}</button>`).join('');
+}
+function pickCat(c){S.quiz.cat=c;renderQuizCats();}
+function setQCount(n){S.quiz.count=n;$('qn-5').className='tog'+(n===5?' active':'');$('qn-10').className='tog'+(n===10?' active':'');}
+
+async function loadQuiz(){
+  if(!S.quiz.cat){alert('Please choose a category first.');return;}
+  $('q-setup').style.display='none';$('q-load').style.display='block';
+  $('q-body').style.display='none';$('q-results').style.display='none';
+  S.quiz.questions=[];S.quiz.current=0;S.quiz.answers=[];
+  const catPrompts={
+    'Anatomy':'Year 1 gross anatomy and histology — muscles, nerves, vessels, organ structure, embryology basics',
+    'Pharmacology':'Year 1 pharmacology — drug mechanisms, receptor pharmacology, side effects, contraindications, basic pharmacokinetics',
+    'Physiology':'Year 1 physiology — cardiac, respiratory, renal, GI, neuro, endocrine physiology mechanisms',
+    'Biochemistry':'Year 1 biochemistry — metabolic pathways, enzymes, genetics basics, molecular biology',
+    'Pathology':'Year 1 pathology — cell injury, inflammation, neoplasia, healing and repair',
+    'Clinical reasoning':'Year 1 clinical medicine — common presentations, examination findings, basic interpretation of investigations'
+  };
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,
+        system:`You are MedPath quiz generator for Year 1 medical students. Topic: ${catPrompts[S.quiz.cat]}.
+Return ONLY a valid JSON array of exactly ${S.quiz.count} MCQs (no fences). Schema:
+[{"q":"Question text","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"Why this is correct and why others are wrong — 2 sentences"}]
+correct is the 0-based index. Questions must be appropriate difficulty for Year 1. Vary difficulty across the set.`,
+        messages:[{role:'user',content:`Generate ${S.quiz.count} MCQs on ${S.quiz.cat} for Year 1 students.`}]})});
+    const d=await res.json();
+    S.quiz.questions=JSON.parse(d.content[0].text.trim().replace(/```json|```/g,'').trim());
+    $('q-load').style.display='none';
+    renderQuestion();
+  }catch(e){$('q-load').innerHTML='<div style="padding:2rem 1rem;text-align:center;color:var(--color-text-danger);font-size:13px;">Failed to generate quiz. <button onclick="resetQuiz()" style="background:none;border:none;cursor:pointer;color:var(--color-text-info);font-family:var(--font-sans);">Try again</button></div>';}
+}
+
+function renderQuestion(){
+  const q=S.quiz.questions[S.quiz.current];
+  $('q-counter').textContent=`Question ${S.quiz.current+1} of ${S.quiz.questions.length}`;
+  $('q-cat-badge').textContent=S.quiz.cat;
+  $('q-text').innerHTML=q.q;
+  $('q-opts').innerHTML=q.options.map((o,i)=>`<button class="opt-btn" id="opt-${i}" onclick="selectOpt(${i})">${o}</button>`).join('');
+  $('q-expl').style.display='none';$('q-expl').textContent='';
+  $('q-next-row').style.display='none';
+  S.quiz.answered=false;
+  $('q-body').style.display='block';
+}
+
+function selectOpt(i){
+  if(S.quiz.answered)return;
+  S.quiz.answered=true;
+  const q=S.quiz.questions[S.quiz.current];
+  S.quiz.answers.push(i);
+  // Colour options
+  for(let j=0;j<4;j++){
+    const b=$('opt-'+j);if(!b)continue;
+    b.disabled=true;
+    if(j===q.correct)b.classList.add('opt-correct');
+    else if(j===i&&i!==q.correct)b.classList.add('opt-wrong');
+  }
+  $('q-expl').style.display='block';
+  $('q-expl').textContent=(i===q.correct?'✓ Correct! ':'✗ Incorrect. ')+q.explanation;
+  $('q-next-row').style.display='block';
+  if(S.quiz.current===S.quiz.questions.length-1){
+    $('q-next-row').innerHTML='<button class="pbtn" style="margin:0;" onclick="showQuizResults()">See results →</button>';
+  }
+}
+
+function nextQ(){
+  S.quiz.current++;
+  if(S.quiz.current>=S.quiz.questions.length)showQuizResults();
+  else renderQuestion();
+}
+
+function showQuizResults(){
+  $('q-body').style.display='none';
+  const correct=S.quiz.answers.filter((a,i)=>a===S.quiz.questions[i].correct).length;
+  const total=S.quiz.questions.length;
+  const pct=Math.round(correct/total*100);
+  const se=$('qr-score');se.textContent=`${correct}/${total}`;se.className=scoreClass(pct);
+  $('qr-label').textContent=`${pct}% — ${pct>=80?'Excellent work!':pct>=60?'Good effort, review the misses.':'More practice needed.'}`;
+  $('qr-breakdown').innerHTML=S.quiz.questions.map((q,i)=>{
+    const ua=S.quiz.answers[i];const correct2=ua===q.correct;
+    return`<div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:8px;font-size:13px;">
+      <div style="font-weight:500;color:var(--color-text-primary);margin-bottom:5px;">${i+1}. ${q.q}</div>
+      <div class="${correct2?'g':'r'}" style="margin-bottom:3px;">${correct2?'✓ Correct':'✗ Incorrect'} — ${q.options[q.correct]}</div>
+      <div style="color:var(--color-text-secondary);font-size:12px;">${q.explanation}</div>
+    </div>`;}).join('');
+  // Update stats and SRS
+  S.quizzes++;S.allScores.push(pct);
+  const topic=S.quiz.cat;
+  S.weak[topic]=S.weak[topic]===undefined?pct:Math.round((S.weak[topic]+pct)/2);
+  updateSRS(topic,pct);
+  S.history.push({topic,label:`${total}-question ${topic} quiz`,score:pct,type:'Quiz'});
+  const sn=$('qr-srs-note');
+  const st=srsStatus(topic);
+  sn.style.display='block';
+  sn.textContent=pct>=70?`SRS updated: ${topic} next review in ${st.interval} day${st.interval>1?'s':''}.`:`SRS: ${topic} scheduled for early review.`;
+  $('q-results').style.display='block';
+}
+
+function resetQuiz(){
+  S.quiz={cat:null,count:5,questions:[],current:0,answers:[],answered:false};
+  $('q-setup').style.display='block';$('q-load').style.display='none';$('q-body').style.display='none';$('q-results').style.display='none';
+  $('q-load').innerHTML='<div style="padding:4rem 1rem;text-align:center;"><div class="thinking" style="margin:0 auto 1rem;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div style="font-size:13px;color:var(--color-text-secondary);">Generating your quiz...</div></div>';
+  renderQuizCats();
+}
+
+// ─── SRS SCREEN ───
+function renderSRS(){
+  const el=$('srs-body');
+  const entries=Object.entries(S.srs).sort((a,b)=>a[1].due-b[1].due);
+  if(!entries.length){
+    el.innerHTML='<div style="padding:2rem 0;text-align:center;font-size:13px;color:var(--color-text-secondary);">No topics tracked yet.<br>Complete cases and quizzes to build your SRS schedule.</div>';
+    return;
+  }
+  const now=Date.now();
+  el.innerHTML=entries.map(([topic,d])=>{
+    const due=d.due<=now;
+    const overDays=Math.floor((now-d.due)/864e5);
+    const nextDays=Math.ceil((d.due-now)/864e5);
+    const dueTxt=due?(overDays===0?'Due today':`Overdue ${overDays}d`):`Due in ${nextDays}d`;
+    const isCaseTopic=SYSTEMS.includes(topic);
+    return`<div class="srs-row">
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);">${topic}</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-top:2px;">Last: ${d.lastScore}% · Interval: ${d.interval}d · Ease: ${d.ease.toFixed(1)}</div>
+      </div>
+      <div class="badge ${due?'bd':'bs'}" style="margin-right:8px;flex-shrink:0;">${dueTxt}</div>
+      ${due?`<button style="font-size:12px;padding:5px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;cursor:pointer;font-family:var(--font-sans);color:var(--color-text-primary);" onclick="${isCaseTopic?`startCaseTopic('${topic}')`:`startQuizTopic('${topic}')`}">Review</button>`:''}
+    </div>`;}).join('');
+}
+
+function startCaseTopic(t){S.sys=t;S.caseSrc='ai';showCaseSetup();}
+function startQuizTopic(t){S.quiz.cat=t;renderQuizCats();showScreen('quiz');}
+
+// ─── OVERRIDES FOR SRS SCREEN SHOW ───
+const _origShowScreen=showScreen;
+function showScreen(id){
+  _origShowScreen(id);
+  if(id==='srs')renderSRS();
+}
+
+// ─── KEYBOARD ───
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey&&document.activeElement===$('chat-in')){e.preventDefault();sendMsg();}
+});
+
+// ─── INIT ───
+renderQuizCats();
+renderHome();
+</script>
